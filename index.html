@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BIO QUIZ – Testează-ți cunoștințele</title>
+<meta name="theme-color" content="#0e1319">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" id="brandLink" aria-label="BIO QUIZ – pagina principală">
+    <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="5" fill="currentColor"/><path d="M16 3v8M16 21v8M3 16h8M21 16h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>BIO QUIZ</span>
+  </a>
+</header>
+
+<main>
+  <!-- PAGINA PRINCIPALĂ -->
+  <section id="home" class="view">
+    <div class="hero">
+      <h1>BIO QUIZ</h1>
+      <p>Testează-ți cunoștințele.</p>
+    </div>
+
+    <div class="stats" id="stats" aria-label="Statistici"></div>
+
+    <form id="configForm" class="card config" novalidate>
+      <h2>Configurează testul</h2>
+
+      <fieldset class="field">
+        <legend>Capitole</legend>
+        <label class="check master"><input type="checkbox" id="allChapters"><span class="box"></span><span class="txt">Toate capitolele</span><span class="badge" id="allCount"></span></label>
+        <div id="chapterList" class="chapter-list"></div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Număr de întrebări</legend>
+        <div class="chips" id="countChips" role="radiogroup" aria-label="Număr de întrebări"></div>
+        <div class="custom" id="customWrap" hidden>
+          <label for="customCount">Introdu numărul dorit</label>
+          <input type="number" id="customCount" min="1" step="1" inputmode="numeric" placeholder="ex. 15">
+        </div>
+        <p class="hint" id="availHint"></p>
+      </fieldset>
+
+      <p class="error" id="configError" role="alert" hidden></p>
+      <button type="submit" class="btn primary big" id="generateBtn">GENEREAZĂ QUIZ</button>
+    </form>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="view" hidden>
+    <div class="progress-head">
+      <div class="progress-text"><strong id="posText">1 / 1</strong><span id="doneText"></span></div>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><div id="barFill"></div></div>
+    </div>
+
+    <article class="card question" id="questionCard" aria-live="polite"></article>
+
+    <div class="nav">
+      <button type="button" class="btn" id="prevBtn">Înapoi</button>
+      <button type="button" class="btn primary" id="nextBtn">Următoarea întrebare</button>
+      <button type="button" class="btn finish" id="finishBtn" hidden>FINALIZEAZĂ TESTUL</button>
+    </div>
+
+    <details class="card map" id="mapBox" open>
+      <summary>Harta întrebărilor</summary>
+      <div class="dots" id="dots"></div>
+      <p class="hint">Cercurile pline sunt întrebările la care ai selectat cel puțin un răspuns. Numerele din hartă arată poziția în test.</p>
+      <button type="button" class="btn finish wide" id="finishBtn2">FINALIZEAZĂ TESTUL</button>
+    </details>
+    <button type="button" class="link" id="quitBtn">Înapoi la pagina principală</button>
+  </section>
+
+  <!-- REZULTAT -->
+  <section id="result" class="view" hidden>
+    <div class="card done">
+      <h2>Test finalizat</h2>
+      <p class="done-line" id="doneLine"></p>
+      <p class="hint">Testul nu este corectat de site. Mai jos vezi răspunsurile pe care le-ai selectat.</p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="newBtn">Generează alt test</button>
+        <button type="button" class="btn" id="retakeBtn">Reia testul</button>
+        <button type="button" class="btn" id="reviewBtn">Revizuiește testul</button>
+        <button type="button" class="btn" id="homeBtn">Înapoi la pagina principală</button>
+      </div>
+    </div>
+    <div class="card"><h3>Răspunsurile tale</h3><ol class="summary" id="summaryList"></ol></div>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
