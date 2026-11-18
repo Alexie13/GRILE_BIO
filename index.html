@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz / Test Generator</title>
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <a class="brand" href="#" id="brand-link" aria-label="Pagina principală">
+      <span class="brand-mark" aria-hidden="true">?</span>
+      <span class="brand-name">Quiz / Test Generator</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-toggle" aria-label="Schimbă tema" title="Schimbă tema">◐</button>
+  </header>
+
+  <main id="main">
+
+    <!-- PAGINA PRINCIPALĂ -->
+    <section id="screen-home" class="screen" hidden>
+      <div class="card">
+        <h1>Quiz / Test Generator</h1>
+        <p class="muted">Alege capitolul și numărul de întrebări, apoi generează un test aleatoriu.</p>
+
+        <div class="field">
+          <span class="label" id="chapter-label">Capitole</span>
+          <div class="chapter-tools">
+            <button type="button" class="btn small ghost" id="ch-all">Selectează toate</button>
+            <button type="button" class="btn small ghost" id="ch-none">Deselectează toate</button>
+          </div>
+          <div class="chapter-list" id="chapter-list" role="group" aria-labelledby="chapter-label"></div>
+          <p class="hint" id="chapter-summary"></p>
+        </div>
+
+        <div class="field">
+          <span class="label" id="count-label">Număr de întrebări</span>
+          <div class="chips" id="count-chips" role="group" aria-labelledby="count-label"></div>
+          <div class="custom-count" id="custom-wrap" hidden>
+            <label for="custom-count" class="sr-only">Număr personalizat</label>
+            <input type="number" id="custom-count" inputmode="numeric" min="1" step="1" placeholder="Număr personalizat">
+          </div>
+          <p class="hint" id="available-hint"></p>
+        </div>
+
+        <p class="error" id="home-error" role="alert" hidden></p>
+        <button type="button" class="btn primary block" id="generate-btn">Generează testul</button>
+      </div>
+    </section>
+
+    <!-- TESTUL -->
+    <section id="screen-test" class="screen" hidden>
+      <div class="test-head">
+        <div class="test-meta">
+          <div class="test-meta-text">
+            <div class="test-scope" id="test-scope"></div>
+            <div class="test-sub" id="test-sub"></div>
+          </div>
+          <div class="test-actions">
+            <button type="button" class="btn small primary" id="share-btn">Partajează testul</button>
+            <button type="button" class="btn small" id="copy-link-btn">Copiază linkul</button>
+            <button type="button" class="btn small ghost" id="new-test-btn">Test nou</button>
+          </div>
+        </div>
+        <div class="progress-row">
+          <span class="progress-text" id="progress-text"></span>
+          <div class="progress" role="progressbar" id="progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="banner" id="shared-banner" hidden>Test primit prin link. Răspunsurile tale rămân doar pe dispozitivul tău.</p>
+
+      <article class="card question-card" id="question-card" aria-live="polite">
+        <div class="q-chapter" id="q-chapter"></div>
+        <h2 class="q-text"><span class="q-num" id="q-num"></span> <span id="q-text"></span></h2>
+        <div class="options" id="options"></div>
+      </article>
+
+      <nav class="nav-bar" aria-label="Navigare întrebări">
+        <button type="button" class="btn ghost" id="prev-btn">← Înapoi</button>
+        <button type="button" class="btn primary" id="next-btn">Următoarea →</button>
+        <button type="button" class="btn primary" id="finish-btn-main" hidden>Finalizează testul</button>
+      </nav>
+
+      <details class="card navigator" id="navigator">
+        <summary id="navigator-summary">Toate întrebările</summary>
+        <div class="qgrid" id="qgrid"></div>
+        <p class="hint">Cifrele reprezintă poziția în test. Numărul original al întrebării apare în dreptul textului ei.</p>
+        <button type="button" class="btn ghost block" id="finish-btn">Finalizează testul</button>
+      </details>
+    </section>
+
+    <!-- TEST FINALIZAT -->
+    <section id="screen-done" class="screen" hidden>
+      <div class="card center">
+        <h1>Test finalizat.</h1>
+        <div class="stack">
+          <button type="button" class="btn primary block" id="review-btn">Revino la test</button>
+          <button type="button" class="btn ghost block" id="done-new-btn">Test nou</button>
+        </div>
+      </div>
+      <h2 class="review-title">Revezi întrebările</h2>
+      <p class="muted review-sub">Apasă „Modifică” la o întrebare ca să revii la ea și să-ți schimbi răspunsurile.</p>
+      <div id="review-list"></div>
+    </section>
+
+    <!-- EROARE -->
+    <section id="screen-error" class="screen" hidden>
+      <div class="card center">
+        <h1 id="error-title">Ceva nu a mers bine</h1>
+        <p class="muted" id="error-text"></p>
+        <div class="stack">
+          <button type="button" class="btn primary block" id="error-partial-btn" hidden></button>
+          <button type="button" class="btn ghost block" id="error-home-btn">Pagina principală</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Dialog partajare -->
+<dialog id="share-dialog">
+  <div class="dialog-body">
+    <h3>Partajează testul</h3>
+    <p class="muted small-text">Linkul conține doar întrebările și ordinea lor, nu răspunsurile tale.</p>
+    <p class="warn" id="file-warning" hidden>Ai deschis site-ul direct din fișier (<code>file://</code>). Linkul va funcționa pentru alte persoane doar dacă site-ul este publicat online.</p>
+    <label for="share-url" class="sr-only">Link test</label>
+    <input type="text" id="share-url" readonly>
+    <div class="stack">
+      <button type="button" class="btn primary block" id="copy-btn">Copiază linkul</button>
+      <a class="btn whatsapp block" id="wa-btn" target="_blank" rel="noopener noreferrer">Trimite pe WhatsApp</a>
+      <button type="button" class="btn ghost block" id="share-close">Închide</button>
+    </div>
+    <p class="hint" id="copy-feedback" role="status"></p>
+  </div>
+</dialog>
+
+<!-- Dialog confirmare -->
+<dialog id="confirm-dialog">
+  <div class="dialog-body">
+    <h3 id="confirm-title"></h3>
+    <p class="muted" id="confirm-text"></p>
+    <div class="row-btns">
+      <button type="button" class="btn ghost" id="confirm-cancel">Anulează</button>
+      <button type="button" class="btn primary" id="confirm-ok">Continuă</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
